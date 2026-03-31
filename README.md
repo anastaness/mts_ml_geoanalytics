@@ -230,8 +230,8 @@ mts_ml_geoanalytics/
 ### 6.2. Клонировать репозиторий
 
 ```
-git clone https://github.com/hep2014/MTC-ItCup-2026.git
-cd MTC-ItCup-2026
+git clone https://github.com/anastaness/mts_ml_geoanalytics.git
+cd mts_ml_geoanalytics
 ```
 
 ### 6.3. Создать виртуальное окружение
