@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ project_title }}</title>
+  <style>
+    :root {
+      --red: {{ palette.red }};
+      --purple: {{ palette.purple }};
+      --purple-2: {{ palette.purple_2 }};
+      --white: {{ palette.white }};
+      --black: {{ palette.black }};
+      --bg: {{ palette.bg }};
+      --line: rgba(23, 23, 28, 0.08);
+      --muted: rgba(23, 23, 28, 0.65);
+      --shadow: 0 14px 34px rgba(99, 81, 183, 0.10);
+      --radius-xl: 26px;
+      --radius-lg: 20px;
+      --radius-md: 15px;
+    }
+
+    @page {
+      size: A3 landscape;
+      margin: 0;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      color: var(--black);
+      background: var(--bg);
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 100% 0%, rgba(99, 81, 183, 0.07), transparent 22%),
+        radial-gradient(circle at 0% 100%, rgba(254, 0, 50, 0.05), transparent 18%),
+        linear-gradient(180deg, #f8f6fd 0%, var(--bg) 100%);
+    }
+
+    .page {
+      width: 420mm;
+      height: 297mm;
+      padding: 11mm 12mm 9mm 12mm;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(99, 81, 183, 0.08), transparent 20%),
+        radial-gradient(circle at 0% 100%, rgba(254, 0, 50, 0.05), transparent 16%),
+        linear-gradient(180deg, #f8f6fd 0%, var(--bg) 100%);
+      position: relative;
+    }
+
+    .top-line {
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      height: 6mm;
+      background: linear-gradient(90deg, var(--red) 0%, var(--purple) 58%, var(--purple-2) 100%);
+    }
+
+    .layout {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 4.2mm;
+      height: 100%;
+      margin-top: 4mm;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1.5fr 0.7fr;
+      gap: 7mm;
+      align-items: start;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: rgba(99, 81, 183, 0.08);
+      border: 1px solid rgba(99, 81, 183, 0.18);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 4mm 0 2mm 0;
+      font-size: 24px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 11.5px;
+      line-height: 1.5;
+      color: var(--muted);
+      max-width: 235mm;
+    }
+
+    .logo-wrap {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .logo-box {
+      width: 52mm;
+      height: 23mm;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4mm;
+    }
+
+    .logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: right center;
+      display: block;
+    }
+
+    .overview {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr) 1.2fr;
+      gap: 3.5mm;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.94);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 4mm;
+    }
+
+    .overview-card.dark {
+      background: linear-gradient(135deg, var(--black) 0%, #2a2a35 100%);
+      color: var(--white);
+    }
+
+    .overview-card.red {
+      background: linear-gradient(180deg, rgba(254, 0, 50, 0.08), rgba(255,255,255,0.98));
+      border-color: rgba(254, 0, 50, 0.18);
+    }
+
+    .overview-card .label {
+      font-size: 10.5px;
+      line-height: 1.3;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 2mm;
+    }
+
+    .overview-card.dark .label,
+    .overview-card.dark .note {
+      color: rgba(255,255,255,0.75);
+    }
+
+    .overview-card .value {
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 2mm;
+    }
+
+    .overview-card .note {
+      font-size: 9.7px;
+      line-height: 1.35;
+      color: rgba(23, 23, 28, 0.52);
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(99,81,183,0.96) 0%, rgba(125,109,216,0.96) 100%);
+      color: var(--white);
+      border-radius: var(--radius-xl);
+      padding: 4.5mm 5mm;
+      box-shadow: 0 16px 42px rgba(99,81,183,0.22);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .hero .k {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.92;
+      margin-bottom: 2mm;
+    }
+
+    .hero .v {
+      font-size: 36px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin-bottom: 2mm;
+    }
+
+    .hero .t {
+      font-size: 11px;
+      line-height: 1.45;
+      opacity: 0.96;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr 0.88fr;
+      gap: 4mm;
+      min-height: 0;
+    }
+
+    .panel {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 3mm;
+      margin-bottom: 3mm;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.02em;
+    }
+
+    .pill {
+      padding: 2.3mm 3mm;
+      border-radius: 999px;
+      background: rgba(99, 81, 183, 0.08);
+      color: var(--purple);
+      border: 1px solid rgba(99, 81, 183, 0.14);
+      font-size: 9.8px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .top-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.8mm;
+      margin-bottom: 2.8mm;
+    }
+
+    .small-box {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: #fcfbff;
+      padding: 3mm 3.2mm;
+    }
+
+    .small-box .k {
+      font-size: 9.8px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 0.8mm;
+    }
+
+    .small-box .v {
+      font-size: 16px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+      margin-bottom: 0.7mm;
+    }
+
+    .small-box .n {
+      font-size: 9.2px;
+      line-height: 1.3;
+      color: rgba(23, 23, 28, 0.52);
+    }
+
+    .score {
+      border-radius: var(--radius-lg);
+      background: linear-gradient(180deg, rgba(254, 0, 50, 0.05), rgba(99, 81, 183, 0.07));
+      border: 1px solid var(--line);
+      padding: 3.5mm;
+      margin-bottom: 2.8mm;
+    }
+
+    .score-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 4mm;
+      margin-bottom: 2mm;
+    }
+
+    .score .left .k {
+      font-size: 9.8px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 0.8mm;
+    }
+
+    .score .left .v {
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 900;
+      color: var(--purple);
+    }
+
+    .score .right {
+      text-align: right;
+      font-size: 10px;
+      color: var(--red);
+      font-weight: 800;
+    }
+
+    .track {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(99,81,183,0.12);
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--red) 0%, var(--purple) 55%, var(--purple-2) 100%);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2.8mm;
+    }
+
+    .mini {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--white);
+      padding: 3mm 3.2mm;
+      min-height: 22mm;
+    }
+
+    .mini .k {
+      font-size: 9.6px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 0.7mm;
+    }
+
+    .mini .v {
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.7mm;
+    }
+
+    .mini .n {
+      font-size: 9px;
+      line-height: 1.3;
+      color: rgba(23, 23, 28, 0.52);
+    }
+
+    .compare-list {
+      display: grid;
+      gap: 2.6mm;
+      margin-bottom: 3mm;
+    }
+
+    .compare-row {
+      display: grid;
+      grid-template-columns: 28mm 1fr 1fr;
+      gap: 2.5mm;
+      align-items: center;
+    }
+
+    .compare-row .name {
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .compare-cell {
+      border: 1px solid var(--line);
+      background: #fcfbff;
+      border-radius: 12px;
+      padding: 2.3mm 2.6mm;
+    }
+
+    .compare-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2mm;
+      margin-bottom: 1.2mm;
+    }
+
+    .compare-head .s {
+      font-size: 9px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .compare-head .n {
+      font-size: 9.6px;
+      font-weight: 900;
+    }
+
+    .compare-track {
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(23,23,28,0.07);
+      overflow: hidden;
+    }
+
+    .a-fill { height: 100%; background: linear-gradient(90deg, var(--purple), var(--purple-2)); border-radius: 999px; }
+    .b-fill { height: 100%; background: linear-gradient(90deg, var(--red), #ff7087); border-radius: 999px; }
+
+    .notes {
+      display: grid;
+      gap: 2.4mm;
+      margin-top: auto;
+    }
+
+    .note-box {
+      display: grid;
+      grid-template-columns: 5mm 1fr;
+      gap: 2.5mm;
+      align-items: start;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--line);
+      background: var(--white);
+      padding: 3mm 3.2mm;
+    }
+
+    .dot {
+      width: 5mm;
+      height: 5mm;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--red), var(--purple));
+      margin-top: 1px;
+    }
+
+    .note-text {
+      font-size: 9.6px;
+      line-height: 1.38;
+      color: var(--black);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="top-line"></div>
+
+    <div class="layout">
+      <section class="header">
+        <div>
+          <div class="eyebrow">EDA • quality dashboard</div>
+          <h1>{{ project_title }}</h1>
+          <p class="subtitle">{{ summary_text }}</p>
+        </div>
+        <div class="logo-wrap">
+          <div class="logo-box">
+            <img src="{{ logo_path }}" alt="logo">
+          </div>
+        </div>
+      </section>
+
+      <section class="overview">
+        {% for item in overview_cards %}
+        <article class="card overview-card {{ item.tone }}">
+          <div class="label">{{ item.label }}</div>
+          <div class="value">{{ item.value }}</div>
+          <div class="note">{{ item.note }}</div>
+        </article>
+        {% endfor %}
+
+        <article class="hero">
+          <div>
+            <div class="k">Общая картина</div>
+            <div class="v">{{ hero_total }}</div>
+            <div class="t">На одной странице собраны только ключевые показатели, которые помогают быстро понять качество источников перед их объединением.</div>
+          </div>
+        </article>
+      </section>
+
+      <section class="content">
+        {% for ds in datasets %}
+        <article class="card panel">
+          <div class="panel-head">
+            <h2 class="panel-title">{{ ds.name }}</h2>
+            <span class="pill">{{ ds.rows_fmt }} объектов</span>
+          </div>
+
+          <div class="top-grid">
+            <div class="small-box">
+              <div class="k">Размер набора</div>
+              <div class="v">{{ ds.rows_fmt }} × {{ ds.cols_fmt }}</div>
+              <div class="n">Строки и колонки исходного источника</div>
+            </div>
+            <div class="small-box">
+              <div class="k">Строки с пропусками</div>
+              <div class="v">{{ ds.rows_with_missing_fmt }}</div>
+              <div class="n">Доля от всех объектов · {{ ds.rows_with_missing_pct }}</div>
+            </div>
+          </div>
+
+          <div class="score">
+            <div class="score-top">
+              <div class="left">
+                <div class="k">Оценка качества</div>
+                <div class="v">{{ ds.score }}</div>
+              </div>
+              <div class="right">{{ ds.risk_label }}</div>
+            </div>
+            <div class="track"><div class="fill" style="width: {{ ds.score }}%"></div></div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="mini">
+              <div class="k">Некорректные геометрии</div>
+              <div class="v">{{ ds.invalid_geom_fmt }}</div>
+              <div class="n">Доля от объектов · {{ ds.invalid_geom_pct }}</div>
+            </div>
+            <div class="mini">
+              <div class="k">Отсутствующие геометрии</div>
+              <div class="v">{{ ds.null_geom_fmt }} / {{ ds.empty_geom_fmt }}</div>
+              <div class="n">Null · {{ ds.null_geom_pct }} / Empty · {{ ds.empty_geom_pct }}</div>
+            </div>
+            <div class="mini">
+              <div class="k">Успешный разбор геометрии</div>
+              <div class="v">{{ ds.parse_success_pct_text }}</div>
+              <div class="n">Доля корректно прочитанных объектов в проверочной выборке</div>
+            </div>
+            <div class="mini">
+              <div class="k">Подозрительные дубликаты</div>
+              <div class="v">{{ ds.signature_dups_fmt }}</div>
+              <div class="n">Кандидаты по сигнатуре · {{ ds.signature_dups_pct }}</div>
+            </div>
+            <div class="mini">
+              <div class="k">Ошибки контуров</div>
+              <div class="v">{{ ds.invalid_holes_fmt }}</div>
+              <div class="n">Объекты с проблемами во внутренних границах</div>
+            </div>
+            <div class="mini">
+              <div class="k">Числовые аномалии{% if ds.name == 'Источник A' %} / площадь{% endif %}</div>
+              <div class="v">{% if ds.name == 'Источник A' %}{{ ds.numeric_flags_fmt }} / {{ ds.area_mismatch_fmt }}{% else %}{{ ds.numeric_flags_fmt }}{% endif %}</div>
+              <div class="n">{% if ds.name == 'Источник A' %}Аномальные значения / объекты с заметным расхождением площади{% else %}Аномальные значения основных числовых признаков{% endif %}</div>
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+
+        <aside class="card panel">
+          <div class="panel-head">
+            <h2 class="panel-title">Сравнение</h2>
+            <span class="pill">A vs B</span>
+          </div>
+
+          <div class="compare-list">
+            {% for row in compare_rows %}
+            <div class="compare-row">
+              <div class="name">{{ row.label }}</div>
+              <div class="compare-cell">
+                <div class="compare-head"><span class="s">A</span><span class="n">{{ row.a_fmt }}</span></div>
+                <div class="compare-track"><div class="a-fill" style="width: {{ (row.a / row.max * 100) | round(1) }}%"></div></div>
+              </div>
+              <div class="compare-cell">
+                <div class="compare-head"><span class="s">B</span><span class="n">{{ row.b_fmt }}</span></div>
+                <div class="compare-track"><div class="b-fill" style="width: {{ (row.b / row.max * 100) | round(1) }}%"></div></div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="notes">
+            {% for text in reader_notes %}
+            <div class="note-box">
+              <span class="dot"></span>
+              <div class="note-text">{{ text }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </aside>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
