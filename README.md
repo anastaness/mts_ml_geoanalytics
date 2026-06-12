@@ -235,8 +235,8 @@ mts_ml_geoanalytic/
 ### 2. Клонировать репозиторий
 
 ```
-git clone https://github.com/anastaness/mts_ml_geoanalytic.git
-cd mts_ml_geoanalytic
+git clone https://github.com/anastaness/mts_ml_geoanalytics.git
+cd mts_ml_geoanalytics
 ```
 
 ### 3. Создать виртуальное окружение
